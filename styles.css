@@ -1,0 +1,37 @@
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(135deg,#1f2b6c 0%,#8f66f7 100%);
+  color:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+}
+.stage{width:100%;max-width:860px}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border-radius:18px;
+  padding:28px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  text-align:center;
+}
+.title{margin:0 0 18px;color:#fff;font-weight:600}
+.box-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.box{width:240px;height:150px;position:relative;perspective:800px}
+.base{width:100%;height:110px;background:#ff7b7b;border-radius:8px 8px 12px 12px;position:absolute;bottom:0;left:0;box-shadow:inset 0 -6px 0 rgba(0,0,0,0.08)}
+.lid{width:100%;height:60px;background:#ff5a5a;border-radius:10px;position:absolute;top:-10px;left:0;transform-origin:top center;transition:transform 700ms cubic-bezier(.2,.9,.2,1);box-shadow:0 6px 20px rgba(0,0,0,0.25)}
+.box .ribbon{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:14px;height:86px;background:rgba(0,0,0,0.06);border-radius:8px}
+.box.open .lid{transform:rotateX(-120deg) translateY(-14px)}
+.open-btn{background:linear-gradient(90deg,#ffd06a,#ff8aa2);border:0;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.18);transition:transform .16s}
+.open-btn:active{transform:translateY(2px)}
+.message{margin-top:18px;opacity:0;transform:translateY(10px);transition:opacity 600ms ease, transform 600ms ease}
+.message.revealed{opacity:1;transform:translateY(0)}
+.emoji-large{font-size:44px;margin-bottom:10px;filter:drop-shadow(0 6px 14px rgba(0,0,0,0.28));animation:pop 900ms ease}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
+.apology-text{margin:0;color:#fff;font-weight:800;letter-spacing:1px;font-size:22px;text-shadow:0 6px 20px rgba(0,0,0,0.3)}
+#confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
+/* small responsive tweaks */
+@media(max-width:420px){.box{width:200px;height:130px}.apology-text{font-size:18px}.emoji-large{font-size:36px}}

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sorry, Golu — For Krishika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+        background: radial-gradient(1000px 600px at 10% 10%, #ffd6e8 0%, rgba(255,255,255,0) 30%), linear-gradient(135deg,#ffe6f0 0%,#ffb3d1 40%,#ff88c8 100%);
+        color:#111;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:32px;
+      }
+      .stage{width:100%;max-width:920px}
+      .card{
+        background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+        border-radius:20px;
+        padding:28px;
+        box-shadow: 0 14px 40px rgba(200,20,80,0.18), inset 0 1px 0 rgba(255,255,255,0.05);
+        text-align:center;
+        backdrop-filter: blur(6px);
+      }
+      .title{margin:0 0 12px;color:#6b0b4a;font-weight:800;letter-spacing:0.6px}
+      .subtitle{margin:0 0 22px;color:#80224a;font-weight:600;opacity:0.95}
+      .box-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+      .box{width:260px;height:160px;position:relative;perspective:900px;cursor:pointer}
+      .base{width:100%;height:116px;background:linear-gradient(180deg,#ff6fa3,#ff4f8b);border-radius:10px 10px 14px 14px;position:absolute;bottom:0;left:0;box-shadow:inset 0 -6px 0 rgba(0,0,0,0.08)}
+      .lid{width:100%;height:70px;background:linear-gradient(180deg,#ff87b7,#ff5f9c);border-radius:12px;position:absolute;top:-10px;left:0;transform-origin:top center;transition:transform 700ms cubic-bezier(.2,.9,.2,1);box-shadow:0 10px 30px rgba(0,0,0,0.22)}
+      .box .ribbon{position:absolute;left:50%;top:14px;transform:translateX(-50%);width:16px;height:90px;background:rgba(255,255,255,0.12);border-radius:8px}
+      .box.open .lid{transform:rotateX(-120deg) translateY(-18px)}
+      .open-hint{margin-top:8px;color:#fff;background: linear-gradient(90deg,#ff8fb3,#ff5f9a);padding:8px 14px;border-radius:999px;display:inline-block;font-weight:700;box-shadow:0 12px 28px rgba(255,110,160,0.16)}
+      .message{margin-top:18px;opacity:0;transform:translateY(10px);transition:opacity 600ms ease, transform 600ms ease}
+      .message.revealed{opacity:1;transform:translateY(0)}
+      .emoji-row{display:flex;gap:14px;justify-content:center;align-items:center}
+      .emoji{font-size:46px;filter:drop-shadow(0 8px 18px rgba(140,20,80,0.22));transform:translateY(6px);opacity:0;transition:transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms}
+      .emoji.show{opacity:1;transform:translateY(0) scale(1.06)}
+      .apology-text{margin:12px 0 0;color:#fff;font-weight:800;letter-spacing:0.6px;font-size:20px;text-shadow:0 10px 28px rgba(160,20,80,0.18)}
+      .apology-sub{margin-top:6px;color:#ffdff0;font-weight:600;opacity:0.95}
+      #confetti{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none}
+      @media(max-width:480px){.box{width:200px;height:120px}.emoji{font-size:36px}.apology-text{font-size:18px}}
+    </style>
+  </head>
+  <body>
+    <main class="stage">
+      <div class="card">
+        <h1 class="title">For My Bestie — Krishika</h1>
+
+        <div class="box-wrap">
+          <div class="box" id="box" role="button" tabindex="0" aria-label="Open box">
+            <div class="lid" id="lid"></div>
+            <div class="base">
+              <div class="ribbon"></div>
+            </div>
+          </div>
+
+          <div class="open-hint">Tap the box</div>
+        </div>
+
+        <div class="message" id="message" aria-live="polite">
+          <div class="emoji-row">
+            <div class="emoji" id="emoji1">🤗</div>
+            <div class="emoji" id="emoji2">❤️</div>
+            <div class="emoji" id="emoji3">😭</div>
+          </div>
+          <div class="apology-text" id="apologyText">MAAF KRDO, GOLU</div>
+        </div>
+      </div>
+
+      <canvas id="confetti"></canvas>
+    </main>
+
+    <script>
+      // Inline interaction script
+      (function(){
+        const box = document.getElementById('box');
+        const message = document.getElementById('message');
+        const e1 = document.getElementById('emoji1');
+        const e2 = document.getElementById('emoji2');
+        const e3 = document.getElementById('emoji3');
+        const confettiCanvas = document.getElementById('confetti');
+        let opened = false;
+
+        function openBox(){
+          if(opened) return;
+          opened = true;
+          box.classList.add('open');
+          // reveal emojis in sequence
+          message.classList.add('revealed');
+          setTimeout(()=> e1.classList.add('show'), 350);
+          setTimeout(()=> e2.classList.add('show'), 650);
+          setTimeout(()=> e3.classList.add('show'), 950);
+          // run confetti
+          setTimeout(startConfetti, 650);
+        }
+
+        box.addEventListener('click', openBox);
+        box.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openBox(); }});
+
+        // Confetti (pink-friendly)
+        function startConfetti(){
+          const ctx = confettiCanvas.getContext('2d');
+          let W = confettiCanvas.width = window.innerWidth;
+          let H = confettiCanvas.height = window.innerHeight;
+          const colors = ['#ffd1e6','#ff9ecf','#ff6fa3','#ffb6d9','#ffd9f2'];
+          const pieces = [];
+          const count = Math.floor(W/18);
+
+          for(let i=0;i<count;i++){
+            pieces.push({
+              x: Math.random()*W,
+              y: Math.random()*H - H,
+              r: Math.random()*7 + 4,
+              c: colors[Math.floor(Math.random()*colors.length)],
+              tilt: Math.random()*10,
+              vy: 2 + Math.random()*3
+            });
+          }
+
+          let raf;
+          function loop(){
+            ctx.clearRect(0,0,W,H);
+            for(let p of pieces){
+              p.y += p.vy;
+              p.x += Math.sin(p.y/20) * 1.2;
+              p.tilt += 0.08;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.tilt*0.02);
+              ctx.fillStyle = p.c;
+              ctx.fillRect(-p.r/2, -p.r/2, p.r, p.r*1.6);
+              ctx.restore();
+              if(p.y > H + 30){
+                p.y = -20;
+                p.x = Math.random()*W;
+              }
+            }
+            raf = requestAnimationFrame(loop);
+          }
+          loop();
+          setTimeout(()=> cancelAnimationFrame(raf), 6000);
+          window.addEventListener('resize', ()=>{ W = confettiCanvas.width = window.innerWidth; H = confettiCanvas.height = window.innerHeight; });
+        }
+      })();
+    </script>
+  </body>
+</html>
